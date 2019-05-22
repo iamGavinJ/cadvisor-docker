@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    privileged: true
+    restart: always
+    ports:
+    - 8081:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    - /dev/disk/:/dev/disk:ro
+    - /dev/zfs/:/dev/zfs:ro
+    command: ["-v", "2"]
+    healthcheck:
+      test: ["CMD", "/usr/bin/wget", "--output-document=/dev/null", "--no-cache", "--no-cookies", "--no-http-keep-alive", "--no-dns-cache", "--prefer-family=IPv6", "--quiet", "http://localhost:8080/"]
+      interval: 11s
+      timeout: 3s
+      retries: 3
+      start_period: 7s
